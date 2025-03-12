@@ -1,0 +1,10 @@
+# cache dir
+.mypy_cache/
+
+# virtualenv
+.venv/
+
+# user data
+xcom_user_data/
+xcom_config.json
+timeline_data.json

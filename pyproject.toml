@@ -1,0 +1,12 @@
+[project]
+name = "x-cli-py"
+version = "0.1.0"
+description = "this is an unofficial x.com cli implemented in python"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "argparse",
+  "json",
+  "os",
+  "selenium"
+]
