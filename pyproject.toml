@@ -1,12 +1,24 @@
 [project]
 name = "x-cli-py"
 version = "0.1.0"
-description = "this is an unofficial x.com cli implemented in python"
+description = "An unofficial CLI tool for x.com"
+authors = [
+    {name = "tuesdayjz",email = "moka010302@gmail.com"}
+]
+homepage = "https://github.com/tuesdayjz"
+repository = "https://github.com/tuesdayjz/x-cli-py"
+license = "LICENSE"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "argparse",
-  "json",
-  "os",
-  "selenium"
+    "typer (>=0.15.2,<0.16.0)",
+    "rich (>=13.9.4,<14.0.0)",
+    "selenium (>=4.29.0,<5.0.0)"
 ]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+xcli = "x_cli_py.main:app"

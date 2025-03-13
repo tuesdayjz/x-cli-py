@@ -38,7 +38,7 @@ log = logging.getLogger("xcom_cli")
 
 def set_log_level(
     log_level: str = typer.Option(
-        "warning", help="Log level (debug, info, warning, error, critical)"
+        "error", help="Log level (debug, info, warning, error, critical)"
     ),
 ):
     """Set the logging level"""
@@ -160,7 +160,7 @@ def setup(user_data_dir: Optional[str] = None):
 
 @app.command()
 def post(user_data_dir: Optional[str] = None):
-    """Post a new tweet to X.com with support for multi-line content"""
+    """Post a new tweet with your editor"""
 
     cli = XComCLI(user_data_dir=user_data_dir)
 
@@ -234,7 +234,7 @@ def timeline(
     user_data_dir: Optional[str] = None,
     tab: int = 2,
 ):
-    """Get the latest posts from the timeline with rich formatting"""
+    """Get the latest posts from the timeline"""
 
     cli = XComCLI(user_data_dir=user_data_dir)
 

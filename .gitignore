@@ -1,10 +1,10 @@
 # cache dir
 .mypy_cache/
+__pycache__/
 
 # virtualenv
 .venv/
 
 # user data
 xcom_user_data/
-xcom_config.json
-timeline_data.json
+*.json
