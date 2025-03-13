@@ -234,7 +234,7 @@ def timeline(
     user_data_dir: Optional[str] = None,
     tab: int = 2,
 ):
-    """Get the latest 10 posts from the timeline with rich formatting"""
+    """Get the latest posts from the timeline with rich formatting"""
 
     cli = XComCLI(user_data_dir=user_data_dir)
 
@@ -316,6 +316,23 @@ def timeline(
             except Exception:
                 post_data["time"] = "Unknown time"
 
+            try:
+                image_elements = article.find_elements(
+                    By.XPATH, ".//div[@data-testid='tweetPhoto']//img"
+                )
+                post_data["images"] = f"{len(image_elements)} images"
+            except Exception:
+                post_data["images"] = "0 images"
+
+            try:
+                time_parent = timestamp.find_element(By.XPATH, "./ancestor::a")
+                post_url = time_parent.get_attribute("href")
+                if not post_url:
+                    raise Exception("No URL found")
+                post_data["url"] = post_url
+            except Exception:
+                post_data["url"] = "URL fetch failed"
+
             posts_data.append(post_data)
             count += 1
 
@@ -330,7 +347,13 @@ def timeline(
             text.append(f"{i}. ", style="cyan")
             text.append(f"{post['user_info']}", style="user_info")
             text.append("\n   ")
-            text.append(f"{post['text']}")
+            text.append(f"{'\n   '.join(post['text'].split('\n'))}")
+            text.append("\n   ")
+            if post["images"] != "0 images":
+                text.append("\n   ")
+                text.append(f"Images: {post['images']}", style="images")
+            text.append("\n   ")
+            text.append(f"URL: {post['url']}", style="info")
             text.append("\n   ")
             text.append(f"Time: {post['time']}", style="timestamp")
 
