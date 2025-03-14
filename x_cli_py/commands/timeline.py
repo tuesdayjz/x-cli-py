@@ -3,7 +3,7 @@ from typing import Optional
 
 import typer
 from rich.panel import Panel
-from rich.text import Text
+from rich.table import Table
 from x_cli_py.theme import log, console
 from x_cli_py.xcli import XComCLI
 from selenium.webdriver.common.by import By
@@ -79,9 +79,30 @@ def timeline_command(
                 user_info = article.find_element(
                     By.XPATH, ".//div[@data-testid='User-Name']"
                 )
-                post_data["user_info"] = " / ".join(user_info.text.split("\n")[:2])
-            except Exception:
+
+                display_name_element = user_info.find_element(By.XPATH, ".//span")
+                username_element = user_info.find_element(
+                    By.XPATH, ".//span[contains(text(), '@')]"
+                )
+
+                display_name = (
+                    display_name_element.get_attribute("innerText")
+                    or username_element.text
+                )
+
+                handle = username_element.text.strip()
+                username = handle.replace("@", "")
+
+                post_data["display_name"] = display_name
+                post_data["username"] = username
+                post_data["user_info"] = f"{display_name} / {handle}"
+                post_data["profile_url"] = f"https://x.com/{username}"
+            except Exception as e:
+                log.warning(f"Error extracting user info: {e}")
+                post_data["display_name"] = "Unknown user"
+                post_data["username"] = "unknown"
                 post_data["user_info"] = "Unknown user"
+                post_data["profile_url"] = "#"
 
             try:
                 post_text = article.find_element(
@@ -103,9 +124,9 @@ def timeline_command(
                 image_elements = article.find_elements(
                     By.XPATH, ".//div[@data-testid='tweetPhoto']//img"
                 )
-                post_data["images"] = f"{len(image_elements)} images"
+                post_data["images"] = str(len(image_elements))
             except Exception:
-                post_data["images"] = "0 images"
+                post_data["images"] = "0"
 
             try:
                 time_parent = timestamp.find_element(By.XPATH, "./ancestor::a")
@@ -125,23 +146,30 @@ def timeline_command(
             )
         )
 
-        for i, post in enumerate(posts_data, 1):
-            text = Text()
-            text.append(f"{i}. ", style="cyan")
-            text.append(f"{post['user_info']}", style="user_info")
-            text.append("\n   ")
-            text.append(f"{'\n   '.join(post['text'].split('\n'))}")
-            text.append("\n   ")
-            if post["images"] != "0 images":
-                text.append("\n   ")
-                text.append(f"Images: {post['images']}", style="images")
-            text.append("\n   ")
-            text.append(f"Post URL: {post['url']}", style="info")
-            text.append("\n   ")
-            text.append(f"Time: {post['time']}", style="timestamp")
+        table = Table(show_header=True, expand=True, show_lines=True)
+        table.add_column("User", style="cyan")
+        table.add_column("Content", style="white", ratio=3)
+        table.add_column("Timestamp", style="dim", justify="right")
 
-            console.print(text)
-            console.rule(style="dim")
+        for i, post in enumerate(posts_data, 1):
+            profile_link = f"[link={post['profile_url']}]{post['display_name']}[/link]"
+            profile = (
+                f"[user_info]{profile_link}" + f" / @{post['username']}[/user_info]"
+            )
+            header = f"[cyan]{i}.[/cyan] " + profile
+
+            text = f"{post['text']}"
+            if post["images"] != "0":
+                text += f" :camera:[bold green] x {post['images']} [/bold green]"
+
+            timestamp_text = " ".join(post["time"].split(".")[0].split("T"))
+            timestamp_text = (
+                f"[link={post['url']}][timestamp]{timestamp_text}[/timestamp][/link]"
+            )
+
+            table.add_row(header, text, timestamp_text)
+
+        console.print(table)
 
     except Exception as e:
         log.error(f"Error fetching timeline: {e}")
