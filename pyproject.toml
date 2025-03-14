@@ -1,6 +1,6 @@
 [project]
 name = "x-cli-py"
-version = "0.1.2"
+version = "0.1.3"
 description = "An unofficial CLI tool for x.com"
 authors = [
     {name = "tuesdayjz",email = "moka010302@gmail.com"}
