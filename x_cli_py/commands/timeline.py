@@ -31,7 +31,7 @@ def timeline_command(
 
         try:
             log.info(f"Selecting tab {tab}...")
-            tablist = WebDriverWait(cli.driver, 5).until(
+            tablist = WebDriverWait(cli.driver, 10).until(
                 EC.presence_of_element_located((
                     By.XPATH,
                     "//div[@role='tablist']",
@@ -60,7 +60,7 @@ def timeline_command(
         posts_data = []
 
         log.info("Fetching posts...")
-        post_articles = WebDriverWait(cli.driver, 2).until(
+        post_articles = WebDriverWait(cli.driver, 10).until(
             EC.presence_of_all_elements_located((
                 By.XPATH,
                 "//article[@data-testid='tweet']",

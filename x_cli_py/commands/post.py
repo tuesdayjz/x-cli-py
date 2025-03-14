@@ -28,7 +28,7 @@ def post_command(user_data_dir: Optional[str] = None):
         cli.driver.get("https://x.com/home")
 
         log.info("Looking for post input field...")
-        post_input = WebDriverWait(cli.driver, 3).until(
+        post_input = WebDriverWait(cli.driver, 10).until(
             EC.presence_of_element_located((
                 By.XPATH,
                 "//div[@data-testid='tweetTextarea_0']",
@@ -62,7 +62,7 @@ def post_command(user_data_dir: Optional[str] = None):
         )
 
         log.info("Submitting post...")
-        post_button = WebDriverWait(cli.driver, 3).until(
+        post_button = WebDriverWait(cli.driver, 10).until(
             EC.element_to_be_clickable((
                 By.XPATH,
                 "//button[@data-testid='tweetButtonInline']",

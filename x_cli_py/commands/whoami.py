@@ -28,7 +28,7 @@ def whoami_command(user_data_dir: Optional[str] = None):
         cli.driver.get("https://x.com/home")
 
         try:
-            profile_link = WebDriverWait(cli.driver, 3).until(
+            profile_link = WebDriverWait(cli.driver, 10).until(
                 EC.element_to_be_clickable((
                     By.XPATH,
                     "//a[@data-testid='AppTabBar_Profile_Link']",
@@ -36,7 +36,7 @@ def whoami_command(user_data_dir: Optional[str] = None):
             )
             profile_link.click()
 
-            user_name = WebDriverWait(cli.driver, 3).until(
+            user_name = WebDriverWait(cli.driver, 10).until(
                 EC.presence_of_element_located((
                     By.XPATH,
                     "//div[@data-testid='UserName']",
