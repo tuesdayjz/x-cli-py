@@ -12,8 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 def timeline_command(
-    user_data_dir: Optional[str] = None,
-    tab: int = 2,
+    user_data_dir: Optional[str] = None, tab: int = 2, user: Optional[str] = None
 ):
     cli = XComCLI(user_data_dir=user_data_dir)
 
@@ -26,33 +25,38 @@ def timeline_command(
     cli.initialize_driver()
 
     try:
-        log.info("Navigating to X.com home page...")
-        cli.driver.get("https://x.com/home")
+        if user:
+            log.info(f"Opening {user}'s profile page...")
+            cli.driver.get(f"https://x.com/{user}")
+        else:
+            log.info("Navigating to X.com home page...")
+            cli.driver.get("https://x.com/home")
 
         try:
-            log.info(f"Selecting tab {tab}...")
-            tablist = WebDriverWait(cli.driver, 10).until(
-                EC.presence_of_element_located((
-                    By.XPATH,
-                    "//div[@role='tablist']",
-                ))
-            )
-
-            tabs = tablist.find_elements(By.XPATH, "./div[@role='presentation']")
-
-            if len(tabs) >= tab - 1:
-                try:
-                    tab_name = tabs[tab - 1].text
-                except Exception:
-                    tab_name = f"Tab {tab}"
-
-                console.print(f"Selected tab: [info]{tab_name}[/info]")
-                tabs[tab - 1].click()
-            else:
-                console.print(
-                    f"[warning]Tab index {tab} is out of range. There are only {len(tabs)} tabs.[/warning]"
+            if not user:
+                log.info(f"Selecting tab {tab}...")
+                tablist = WebDriverWait(cli.driver, 10).until(
+                    EC.presence_of_element_located((
+                        By.XPATH,
+                        "//div[@role='tablist']",
+                    ))
                 )
-                console.print("Continuing with the current view.")
+
+                tabs = tablist.find_elements(By.XPATH, "./div[@role='presentation']")
+
+                if len(tabs) >= tab - 1:
+                    try:
+                        tab_name = tabs[tab - 1].text
+                    except Exception:
+                        tab_name = f"Tab {tab}"
+
+                    console.print(f"Selected tab: [info]{tab_name}[/info]")
+                    tabs[tab - 1].click()
+                else:
+                    console.print(
+                        f"[warning]Tab index {tab} is out of range. There are only {len(tabs)} tabs.[/warning]"
+                    )
+                    console.print("Continuing with the current view.")
         except Exception as e:
             log.warning(f"Could not select tab: {e}")
             console.print("[warning]Continuing with current view.[/warning]")

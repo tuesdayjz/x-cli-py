@@ -19,10 +19,12 @@ def setup(user_data_dir: str = typer.Option(None, help="User data directory")):
 
 @app.command()
 def tl(
-    user_data_dir: str = typer.Option(None, help="User data directory"), tab: int = 2
+    user_data_dir: str = typer.Option(None, help="User data directory"),
+    tab: int = 2,
+    user: str = typer.Option(None, help="Get specific user's timeline"),
 ):
     """Get the latest posts from the timeline"""
-    timeline_command(user_data_dir=user_data_dir, tab=tab)
+    timeline_command(user_data_dir=user_data_dir, tab=tab, user=user)
 
 
 @app.command()

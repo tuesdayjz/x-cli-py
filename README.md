@@ -12,6 +12,7 @@ poetry install
 
 # from pypi
 pip install x-cli-py
+pipx install x-cli-py
 ```
 
 ## usage
@@ -27,7 +28,8 @@ xcli setup
 # get the latest timeline.
 # the default setting will get the Following timeline.
 xcli tl
-xcli tl --tab 1
+xcli tl --tab 1 # get the For You timeline.
+xcli tl --user <username> # get the timeline of the user.
 
 # post some text.
 # your default text editor (`echo $EDITOR`) will open.
